@@ -1,0 +1,71 @@
+version: "3.7"
+volumes:
+  Shared:
+
+
+services:
+  website:
+    image: "library/hello-world"
+    labels:
+      Name: "Hello world"
+      Env: "Dev"
+      Created_by: "Anna"
+    ports:
+      - "80:80/tcp"
+    volumes:
+      - "Shared:/Shared"
+    deploy:
+      replicas: 5
+      restart_policy:
+        condition: "on-failure"
+      placement:
+        constraints:
+          - node.role == worker
+      resources:
+        limits:
+          memory: "50M"
+          cpus: "0.1"
+
+  db:
+    image: "library/hello-world"
+    labels:
+      Name: "db"
+      Env: "Dev"
+      Created_by: "Anna"
+    ports:
+      - "3306:3306/tcp"
+    volumes:
+      - "Shared:/Shared"
+    deploy:
+      replicas: 5
+      restart_policy:
+        condition: "on-failure"
+      placement:
+        constraints:
+          - node.role == worker
+      resources:
+        limits:
+          memory: "50M"
+          cpus: "0.1"
+
+  lb:
+    image: "nginx"
+    labels:
+      Name: "lb"
+      Env: "Dev"
+      Created_by: "Anna"
+    ports:
+      - "8080:8080/tcp"
+    volumes:
+      - "Shared:/Shared"
+    deploy:
+      replicas: 5
+      restart_policy:
+        condition: "on-failure"
+      placement:
+        constraints:
+          - node.role == worker
+      resources:
+        limits:
+          memory: "50M"
+          cpus: "0.1"
